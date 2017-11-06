@@ -6,11 +6,21 @@ import sklearn.preprocessing as skp
 from excelparse import fileToDframe
 import os
 
-filename = os.path.abspath('data.xlsx')
+# filename = os.path.abspath('data.xlsx')
 
-data = fileToDframe(filename, 0, )
+# data = fileToDframe(filename, footer=0, cols=None )
 
-# Normalize data for varying data sizes
+filename = os.path.abspath('../Data_nieuwveer.xlsx')
+columns = [3, 4, 5, 7, 15, 20, 35, 36, 43, 66, 79]
+df = fileToDframe(filename, 92, columns, 1)
+
+clean_df = df.dropna(subset=['COD','COD.1','COD.2','Precipitation'])
+
+noise = np.random.normal(0, 0.1, clean_df.shape)
+n = clean_df+noise
+n = n.abs()
+
+# TSNE# Normalize data for varying data sizes
 min_max_scaler = skp.MinMaxScaler()
 n_scaled = min_max_scaler.fit_transform(n)
 
@@ -77,6 +87,8 @@ eigval, eigvec = np.linalg.eig(cov)
 plt.hist(pca2.components_[0])
 plt.hist(np.dot(np.array(n_scaled.T).transpose(),np.array(eigvec[:,1])))
 plt.show()
+
+print pca2.explained_variance_
 
 
 
